@@ -1,5 +1,4 @@
 from utils.misc import import_app
-from pathlib import Path
 
 
 class EnvironDict(object):
@@ -19,7 +18,7 @@ except ImportError:
         configs = {}
 
 
-BASE = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = getattr(configs, 'SECRET_KEY', '+y01%7#9aipmcca171@(%%3i0v#mi(f32&a-(+r0=w_i7mj2yk')
 PRODUCTION = getattr(configs, 'PRODUCTION', False)
@@ -27,7 +26,7 @@ PRODUCTION = getattr(configs, 'PRODUCTION', False)
 DEBUG = not PRODUCTION
 TEMPLATE_DEBUG = not PRODUCTION
 
-ALLOWED_HOSTS = getattr(configs, 'ALLOWED_HOSTS', [])
+# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -39,15 +38,25 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 ]
 
-ROOT_URLCONF = '{DJANGO_PROJECT}.urls'
-WSGI_APPLICATION = '{DJANGO_PROJECT}.wsgi.application'
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+# Database
+# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 ENGINE = getattr(configs, 'ENGINE', None)
 if not ENGINE or ENGINE == 'sqlite3':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': getattr(configs, 'DB_NAME', str(BASE / 'db.sqlite3')),
+            'NAME': getattr(configs, 'DB_NAME', str(BASE_DIR / 'db.sqlite3')),
         }
     }
 elif ENGINE == 'mysql':
@@ -61,6 +70,11 @@ elif ENGINE == 'mysql':
         }
     }
 
+ALLOWED_HOSTS = getattr(configs, 'ALLOWED_HOSTS', [])
+
+ROOT_URLCONF = '{DJANGO_PROJECT}.urls'
+WSGI_APPLICATION = '{DJANGO_PROJECT}.wsgi.application'
+
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Bangkok'
 USE_I18N = True
@@ -68,30 +82,22 @@ USE_L10N = True
 USE_TZ = False
 DATE_FORMAT = "SHORT_DATE_FORMAT"
 
-TEMPLATE_DIRS = [str(BASE / 'templates')]
+TEMPLATE_DIRS = [str(BASE_DIR / 'templates')]
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [str(BASE / 'static')]
-STATIC_ROOT = str(BASE / 'static_root')
+STATICFILES_DIRS = [str(BASE_DIR / 'static')]
+STATIC_ROOT = str(BASE_DIR / 'static_root')
 MEDIA_URL = '/media/'
-MEDIA_ROOT = str(BASE / 'media')
-
-MIDDLEWARE_CLASSES = [
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
+MEDIA_ROOT = str(BASE_DIR / 'media')
 
 TEMPLATE_CONTEXT_PROCESSORS = [
-    "django.contrib.auth.context_processors.auth",
-    "django.template.context_processors.debug",
-    "django.template.context_processors.i18n",
-    "django.template.context_processors.media",
-    "django.template.context_processors.static",
-    "django.template.context_processors.tz",
-    "django.contrib.messages.context_processors.messages",
+    'django.contrib.auth.context_processors.auth',
+    'django.contrib.messages.context_processors.messages',
+    'django.template.context_processors.debug',
+    'django.template.context_processors.i18n',
+    'django.template.context_processors.media',
+    'django.template.context_processors.static',
+    'django.template.context_processors.tz',
+    'django.template.context_processors.request',
 ]
 
 TEMPLATES = [
@@ -112,16 +118,7 @@ if DEBUG:
             MIDDLEWARE_CLASSES.index('django.middleware.common.CommonMiddleware') + 1,
             'debug_toolbar.middleware.DebugToolbarMiddleware')
 
-if import_app('picker', INSTALLED_APPS):
-    PICKER_INSTALLED_APPS = (
-        'jquery',
-        'bootstrap',
-        'bootstrap-cosmo',
-        'less',
-    )
-
 import_app('dconfig', INSTALLED_APPS)  # Try import dconfig it self
-
 
 LOGGING = {
     'version': 1,
@@ -166,7 +163,7 @@ if RAVEN_DSN:
 
     RAVEN_CONFIG = {
         'dsn': RAVEN_DSN,
-        'release': raven.fetch_git_sha(str(BASE)),
+        'release': raven.fetch_git_sha(str(BASE_DIR)),
     }
 
     LOGGING['formatters']['verbose']  = {
