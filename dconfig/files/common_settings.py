@@ -58,7 +58,7 @@ if not ENGINE or ENGINE == 'sqlite3':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': getattr(configs, 'DB_NAME', str(BASE_DIR / 'db.sqlite3')),
+            'NAME': getattr(configs, 'DB_NAME', os.path.join(BASE_DIR, 'db.sqlite3')),
         }
     }
 elif ENGINE == 'mysql':
@@ -69,6 +69,17 @@ elif ENGINE == 'mysql':
             'USER': getattr(configs, 'DB_USER', 'root'),
             'PASSWORD': getattr(configs, 'DB_PASSWORD', 'password'),
             'HOST': getattr(configs, 'DB_HOST', '127.0.0.1'),
+        }
+    }
+elif ENGINE == 'postgresql'
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': getattr(configs, 'DB_NAME', 'dbname'),
+            'USER': getattr(configs, 'DB_USER', 'root'),
+            'PASSWORD': getattr(configs, 'DB_PASSWORD', 'password'),
+            'HOST': getattr(configs, 'DB_HOST', '127.0.0.1'),
+            'PORT': '5432',
         }
     }
 
@@ -84,12 +95,12 @@ USE_L10N = True
 USE_TZ = False
 DATE_FORMAT = "SHORT_DATE_FORMAT"
 
-TEMPLATE_DIRS = [str(BASE_DIR / 'templates')]
+TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [str(BASE_DIR / 'static')]
-STATIC_ROOT = str(BASE_DIR / 'static_root')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 MEDIA_URL = '/media/'
-MEDIA_ROOT = str(BASE_DIR / 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 TEMPLATE_CONTEXT_PROCESSORS = [
     'django.contrib.auth.context_processors.auth',
