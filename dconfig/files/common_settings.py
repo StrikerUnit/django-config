@@ -22,7 +22,7 @@ except ImportError:
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = getattr(configs, 'SECRET_KEY', '+y01%7#9aipmcca171@(%%3i0v#mi(f32&a-(+r0=w_i7mj2yk')
+SECRET_KEY = getattr(configs, 'SECRET_KEY', '{SECRET_KEY}')
 PRODUCTION = getattr(configs, 'PRODUCTION', False)
 
 DEBUG = not PRODUCTION
