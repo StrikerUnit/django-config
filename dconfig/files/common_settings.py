@@ -71,7 +71,7 @@ elif ENGINE == 'mysql':
             'HOST': getattr(configs, 'DB_HOST', '127.0.0.1'),
         }
     }
-elif ENGINE == 'postgresql'
+elif ENGINE == 'postgresql':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
