@@ -289,8 +289,6 @@ class ConfMain(ConfBase):
         shutil.copy(str(self.files_path / 'utils' / 'decorators.py'), str(self.root_path / 'utils' / 'decorators.py'))
         print('copying utils/misc.py')
         shutil.copy(str(self.files_path / 'utils' / 'misc.py'), str(self.root_path / 'utils' / 'misc.py'))
-        print('copying fabfile.py')
-        shutil.copy(str(self.files_path / 'fabfile.py'), str(self.root_path / 'fabfile.py'))
         if not os.path.exists('static'):
             print('creating static')
             os.makedirs('static')
